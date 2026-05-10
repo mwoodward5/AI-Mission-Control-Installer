@@ -1,19 +1,15 @@
-# AI Mission Control Smoke Test
+# AI Mission Control V2 Smoke Test
 
-Use this after every pull or big change.
-
-## 1. Pull and install
+## 1. Build and start
 
 ```powershell
-cd C:\AICommandCenter
-git pull --ff-only
-powershell -NoProfile -File .\install-local.ps1
+cd C:\AICommandCenter\app
+npm install
+npm run build
 ```
 
-## 2. Start dashboard
-
 ```powershell
-powershell -NoProfile -File C:\AICommandCenter\scripts\launch-dashboard.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File C:\AICommandCenter\scripts\launch-dashboard.ps1
 ```
 
 Open:
@@ -22,106 +18,76 @@ Open:
 http://localhost:5173
 ```
 
-## 3. Confirm the simple UI
+## 2. Validate UI shape
 
-You should see one main mission box, not the older multi-panel admin dashboard.
+- Confirm one main window: status bar + chat transcript + one large composer.
+- Confirm no multi-panels are visible by default.
+- Confirm debug drawer is hidden behind the ⚙ button.
 
-Expected main buttons:
+## 3. Validate microphone
 
-- Run smart route
-- Dictate mission
-- Force local first
-- Force Perplexity
-- Force ChatGPT
-- System check
-- Model scan
-- Benchmark
+- Click 🎤 and speak one short phrase.
+- Confirm text appears in composer.
 
-## 4. Run local checks
-
-Click:
-
-1. System check
-2. Model scan
-3. Benchmark
-
-Expected result:
-
-- Output appears in Execution trail
-- Files appear under `C:\AICommandCenter\outputs` and `C:\AICommandCenter\logs`
-
-## 5. Test browser provider flow
+## 4. Validate local route
 
 Type:
 
 ```text
-Research the best current local coding model for Ollama and give me a short recommendation with citations.
+Scan C:\AICommandCenter locally and summarize what this app does.
 ```
 
-Click:
+- Click **Go**.
+- Confirm it routes to local.
+- Confirm a ticket is written to `C:\AICommandCenter\tickets`.
+- Confirm chat transcript is saved under `C:\AICommandCenter\outputs\chats`.
 
-```text
-Run smart route
-```
-
-Expected:
-
-- It routes to Perplexity
-- It opens a normal Perplexity browser tab
-- Prompt is copied to clipboard
-- No cookies/passwords/tokens are touched
-
-## 6. Test ChatGPT route
+## 5. Validate Perplexity route
 
 Type:
 
 ```text
-Fix the Vite React TypeScript dashboard build and give me exact Codex steps.
+Research the latest best local coding models for Ollama with citations.
 ```
 
-Click:
+- Click **Go** (or set provider override to `perplexity` in debug).
+- Confirm Perplexity tab opens.
+- Confirm prompt copied.
+- Confirm prompt file is created under `C:\AICommandCenter\outputs\provider-prompts`.
 
-```text
-Run smart route
-```
-
-Expected:
-
-- It routes to ChatGPT
-- It opens a normal ChatGPT browser tab
-- Prompt is copied to clipboard
-
-## 7. Test local route
+## 6. Validate ChatGPT route
 
 Type:
 
 ```text
-Scan my repo locally and summarize the package.json and likely build command.
+Review this Vite React app and give the smallest patch plan to simplify the UI.
 ```
 
-Click:
+- In debug set provider override to `chatgpt` and click **Go**.
+- Confirm ChatGPT tab opens.
+- Confirm prompt copied.
 
-```text
-Force local first
-```
+## 7. Validate provider response capture
 
-Expected:
+- Paste a fake response in the inline answer area.
+- Click **Save provider answer**.
+- Confirm file writes to `C:\AICommandCenter\outputs\provider-responses`.
 
-- It saves a ticket
-- It copies a local-first prompt
-- It does not open paid browser AI
+## 8. Validate system / model actions from debug
 
-## 8. Final validation
+In debug drawer:
 
-Run:
+- Run **System check**.
+- Run **Model scan**.
+- Run **Benchmark**.
+
+Confirm command output shows in raw terminal output area and artifacts are written to outputs.
+
+## 9. Final pass
 
 ```powershell
 cd C:\AICommandCenter\app
 npm run build
 ```
 
-Pass condition:
-
-```text
-Build completes without TypeScript errors.
-```
+Build should pass.
