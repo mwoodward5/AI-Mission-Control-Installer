@@ -1,6 +1,7 @@
 param(
   [Parameter(Mandatory)][ValidateSet('ollama', 'lmstudio', 'chatgpt', 'perplexity', 'claude', 'gemini', 'openclaw')][string]$Provider,
-  [string]$Prompt = ''
+  [string]$Prompt = '',
+  [string]$PromptFile = ''
 )
 
 $url = switch ($Provider) {
@@ -13,11 +14,32 @@ $url = switch ($Provider) {
   'openclaw' { 'https://openclaw.ai/' }
 }
 
-if ($Prompt) {
-  Set-Clipboard -Value $Prompt
-  Write-Host "Prompt copied to clipboard."
+$promptText = ''
+$promptSource = 'none'
+
+if ($PromptFile) {
+  if (-not (Test-Path -LiteralPath $PromptFile)) {
+    throw "PromptFile not found: $PromptFile"
+  }
+  $promptText = Get-Content -LiteralPath $PromptFile -Raw
+  $promptSource = "file:$PromptFile"
+} elseif ($Prompt) {
+  $promptText = $Prompt
+  $promptSource = 'argument'
+}
+
+if ($promptText) {
+  Set-Clipboard -Value $promptText
+  Write-Host "Prompt copied to clipboard from $promptSource."
 }
 
 Write-Host "Opening provider tab: $url (logged-in browser profile)"
 Start-Process $url
-Write-Output @{ opened=$true; provider=$Provider; url=$url; promptCopied = [bool]$Prompt } | ConvertTo-Json -Depth 6
+
+[pscustomobject]@{
+  opened = $true
+  provider = $Provider
+  url = $url
+  promptCopied = [bool]$promptText
+  promptSource = $promptSource
+} | ConvertTo-Json -Depth 6
