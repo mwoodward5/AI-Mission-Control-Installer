@@ -35,12 +35,6 @@ $tests = [ordered]@{
   write_react_component = 'write a tiny React component for a status light with three colors and text label.'
   analyze_error_log = 'analyze this error and suggest likely fix: Cannot find module react-dom/client.'
 }
-if (-not $FullSuite) {
-  $keys = @('summarize_repo_structure', 'explain_package_json', 'find_build_command')
-  $compactTests = [ordered]@{}
-  foreach ($key in $keys) { $compactTests[$key] = $tests[$key] }
-  $tests = $compactTests
-}
 
 function scoreFromText([string]$text) {
   if (-not $text) { return 0 }

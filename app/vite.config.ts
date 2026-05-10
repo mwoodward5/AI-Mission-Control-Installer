@@ -31,7 +31,8 @@ function safeReadJson(filePath: string) {
   try {
     if (!fs.existsSync(filePath)) return null
     const raw = fs.readFileSync(filePath, 'utf8')
-    return raw.trim() ? JSON.parse(raw) : null
+    const text = raw.replace(/^\uFEFF/, '').trim()
+    return text ? JSON.parse(text) : null
   } catch {
     return null
   }
@@ -93,7 +94,7 @@ function mapProviderCode(provider: string) {
     'OpenClaw (browser)': 'openclaw',
     'Local Ollama/LM Studio': 'ollama',
   }
-  return map[provider] ?? provider.toLowerCase().replace(/[^a-z0-9]/g, '') || 'chatgpt'
+  return map[provider] ?? (provider.toLowerCase().replace(/[^a-z0-9]/g, '') || 'chatgpt')
 }
 
 function latestJsonFromPattern(dir: string, pattern: string) {
@@ -218,14 +219,16 @@ export default defineConfig({
           } else if (action === 'npmInstallPreview') {
             const run = await runPowershell('npm-safe.ps1', ['-Script', 'install', '-Repo', repoPath, '-NoPrompt', '-DryRun'])
             command = `powershell -File npm-safe.ps1 -Script install -Repo "${repoPath}" -DryRun -NoPrompt`; commandOutput = [run.output, run.error].filter(Boolean).join('\n'); exitCode = run.code
-          } else if (action === 'npmBuild') {
+        } else if (action === 'npmBuild') {
             if (!scripts?.build) return sendJson(res, 200, { ok: false, action: 'repo-action', output: 'No build script found', error: 'Missing npm build script in package.json' })
-            const run = await runCommand('npm', ['run', 'build'], repoPath)
-            command = `npm run build --prefix "${repoPath}"`; commandOutput = [run.output, run.error].filter(Boolean).join('\n'); exitCode = run.code
+            const run = await runCommand('cmd', ['/c', 'npm run build'], repoPath)
+            command = `npm run build --prefix "${repoPath}"`
+            commandOutput = [run.output, run.error].filter(Boolean).join('\n'); exitCode = run.code
           } else if (action === 'npmTest') {
             if (!scripts?.test) return sendJson(res, 200, { ok: false, action: 'repo-action', output: 'No test script', error: 'Missing npm test script in package.json' })
-            const run = await runCommand('npm', ['run', 'test'], repoPath)
-            command = `npm run test --prefix "${repoPath}"`; commandOutput = [run.output, run.error].filter(Boolean).join('\n'); exitCode = run.code
+            const run = await runCommand('cmd', ['/c', 'npm run test'], repoPath)
+            command = `npm run test --prefix "${repoPath}"`
+            commandOutput = [run.output, run.error].filter(Boolean).join('\n'); exitCode = run.code
           } else if (action === 'openFolder') {
             const run = await runCommand('explorer', [repoPath], projectRoot)
             command = `explorer "${repoPath}"`; commandOutput = [run.output, run.error].filter(Boolean).join('\n'); exitCode = run.code

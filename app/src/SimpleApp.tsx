@@ -25,6 +25,14 @@ type Run = {
   ticketPath?: string
 }
 
+type ActivityEvent = {
+  id: string
+  at: string
+  message: string
+}
+
+type RepoAction = 'status' | 'npmInstallPreview' | 'npmBuild' | 'npmTest' | 'openFolder' | 'backup'
+
 type HealthPayload = {
   bridge?: string
   mode?: string
@@ -55,15 +63,6 @@ type SpeechRecognitionLike = {
   onerror: (() => void) | null
   start: () => void
   stop: () => void
-}
-
-type SpeechCtor = new () => SpeechRecognitionLike
-
-declare global {
-  interface Window {
-    SpeechRecognition?: SpeechCtor
-    webkitSpeechRecognition?: SpeechCtor
-  }
 }
 
 const STORAGE_KEY = 'ai-mission-control-simple-v1'
@@ -146,11 +145,30 @@ export default function SimpleApp() {
   const [health, setHealth] = useState<HealthPayload | null>(null)
   const [status, setStatus] = useState<Status>('idle')
   const [listening, setListening] = useState(false)
+  const [activity, setActivity] = useState<ActivityEvent[]>(() => {
+    const saved = localStorage.getItem(`${STORAGE_KEY}:activity`)
+    try {
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
+  })
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null)
+  const [repoFolders, setRepoFolders] = useState<string[]>([])
+  const [currentRepo, setCurrentRepo] = useState('')
+  const [repoStates, setRepoStates] = useState({
+    installPreview: { status: 'idle', command: '', output: '' },
+    npmBuild: { status: 'idle', command: '', output: '' },
+    npmTest: { status: 'idle', command: '', output: '' },
+  })
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(runs.slice(0, 50)))
   }, [runs])
+
+  useEffect(() => {
+    localStorage.setItem(`${STORAGE_KEY}:activity`, JSON.stringify(activity.slice(0, 100)))
+  }, [activity])
 
   useEffect(() => {
     bridge<HealthPayload>('/api/mission-control/health', 'GET')
@@ -158,10 +176,28 @@ export default function SimpleApp() {
       .catch(() => setHealth(null))
   }, [])
 
+  useEffect(() => {
+    bridge<{ repos: string[] }>('/api/mission-control/repos', 'GET')
+      .then((res) => {
+        const repos = res.payload?.repos || []
+        setRepoFolders(repos)
+        if (!currentRepo && repos.length > 0) {
+          setCurrentRepo(repos[0])
+        }
+      })
+      .catch(() => {
+        setRepoFolders([])
+      })
+  }, [])
+
   const latest = runs[0]
   const suggestedProvider = useMemo(() => chooseProvider(prompt || latest?.userPrompt || ''), [prompt, latest])
 
   const pushRun = (run: Run) => setRuns((prev) => [run, ...prev].slice(0, 50))
+
+  const addActivity = (message: string) => {
+    setActivity((prev) => [{ id: makeId(), at: now(), message }, ...prev].slice(0, 100))
+  }
 
   const createTicket = async (provider: Provider, userPrompt: string) => {
     const ticket = {
@@ -184,6 +220,7 @@ export default function SimpleApp() {
     if (!userPrompt) return
 
     setStatus('thinking')
+    addActivity('🧠 choosing provider')
     const provider = forcedProvider || chooseProvider(userPrompt)
     const routedPrompt = providerPrompt(provider, userPrompt)
     const baseRun: Run = {
@@ -197,15 +234,20 @@ export default function SimpleApp() {
 
     try {
       const ticketPath = await createTicket(provider, userPrompt)
+      addActivity('💬 prompt copied')
       if (provider === 'local') {
+        addActivity('🧹 scanning locally')
+        addActivity('💸 avoiding cloud tokens')
         await navigator.clipboard.writeText(routedPrompt)
         pushRun({ ...baseRun, status: 'done', ticketPath, output: 'Local-first prompt copied. Use your local Ollama/LM Studio/Codex flow for cheap scan/plan work.' })
         setStatus('done')
       } else {
+        addActivity('🌐 opening browser')
         const opened = await bridge('/api/mission-control/open-provider', 'POST', {
           provider: providerUiNames[provider],
           prompt: routedPrompt,
         })
+        addActivity('📋 waiting for pasted answer')
         pushRun({ ...baseRun, status: opened.ok ? 'browser' : 'warning', ticketPath, command: opened.command, output: opened.output || opened.error })
         setStatus(opened.ok ? 'browser' : 'warning')
       }
@@ -221,7 +263,10 @@ export default function SimpleApp() {
     setStatus('thinking')
     const endpoint = kind === 'system' ? 'system-check' : kind === 'models' ? 'model-scan' : 'model-benchmark'
     try {
+      addActivity(kind === 'system' ? '🧠 choosing provider' : kind === 'models' ? '🔍 checking models' : '🧹 scanning locally')
       const result = await bridge(`/api/mission-control/${endpoint}`)
+      addActivity(kind === 'benchmarks' ? '🧪 running safe command' : '💬 prompt copied')
+      addActivity(result.ok ? '✅ build passed' : '🔴 build failed')
       pushRun({
         id: makeId(),
         at: now(),
@@ -236,11 +281,78 @@ export default function SimpleApp() {
     } catch (error) {
       pushRun({ id: makeId(), at: now(), provider: 'local', status: 'warning', userPrompt: `Run ${kind}`, routedPrompt: '', output: error instanceof Error ? error.message : String(error) })
       setStatus('warning')
+      addActivity('🔴 build failed')
+    }
+  }
+
+  const runRepoAction = async (action: RepoAction) => {
+    if (!currentRepo) {
+      addActivity('🔴 build failed')
+      setStatus('warning')
+      pushRun({
+        id: makeId(),
+        at: now(),
+        provider: 'local',
+        status: 'warning',
+        userPrompt: `Repo action ${action}`,
+        routedPrompt: 'No repo selected.',
+      })
+      return
+    }
+
+    setStatus('thinking')
+    addActivity('🧪 running safe command')
+    const actionMap: Record<string, string> = {
+      status: 'git status',
+      npmInstallPreview: 'npm install preview',
+      npmBuild: 'npm run build',
+      npmTest: 'npm test',
+      openFolder: 'open folder',
+      backup: 'create backup before edits',
+    }
+    try {
+      addActivity(`🧪 running safe command: ${actionMap[action]}`)
+      const result = await bridge('/api/mission-control/repo-action', 'POST', { action, repoPath: currentRepo })
+      if (action === 'npmInstallPreview') {
+        setRepoStates((prev) => ({ ...prev, installPreview: { status: result.ok ? 'passed' : 'failed', command: result.command || '', output: result.output || '' } }))
+      } else if (action === 'npmBuild') {
+        setRepoStates((prev) => ({ ...prev, npmBuild: { status: result.ok ? 'passed' : 'failed', command: result.command || '', output: result.output || '' } }))
+      } else if (action === 'npmTest') {
+        setRepoStates((prev) => ({ ...prev, npmTest: { status: result.ok ? 'passed' : 'failed', command: result.command || '', output: result.output || '' } }))
+      }
+      addActivity(result.ok ? '✅ build passed' : '🔴 build failed')
+      pushRun({
+        id: makeId(),
+        at: now(),
+        provider: 'local',
+        status: result.ok ? 'done' : 'warning',
+        userPrompt: `Repo action: ${actionMap[action]}`,
+        routedPrompt: `Safe terminal command for ${currentRepo}`,
+        command: result.command || '',
+        output: [result.output, result.error].filter(Boolean).join('\n'),
+      })
+      setStatus(result.ok ? 'done' : 'warning')
+    } catch (error) {
+      addActivity('🔴 build failed')
+      pushRun({
+        id: makeId(),
+        at: now(),
+        provider: 'local',
+        status: 'warning',
+        userPrompt: `Repo action: ${actionMap[action]}`,
+        routedPrompt: '',
+        output: error instanceof Error ? error.message : String(error),
+      })
+      setStatus('warning')
     }
   }
 
   const startVoice = () => {
-    const Ctor = window.SpeechRecognition || window.webkitSpeechRecognition
+    const windowSpeech = window as unknown as {
+      SpeechRecognition?: { new(): SpeechRecognitionLike }
+      webkitSpeechRecognition?: { new(): SpeechRecognitionLike }
+    }
+    const Ctor = windowSpeech.SpeechRecognition || windowSpeech.webkitSpeechRecognition
     if (!Ctor) {
       pushRun({ id: makeId(), at: now(), provider: 'local', status: 'warning', userPrompt: 'Voice input', routedPrompt: '', output: 'This browser does not support SpeechRecognition.' })
       return
@@ -251,10 +363,10 @@ export default function SimpleApp() {
     recognition.lang = 'en-US'
     recognition.continuous = true
     recognition.interimResults = false
-    recognition.onresult = (event) => {
-      const text = Array.from(event.results)
+    recognition.onresult = (event: SpeechResultEventLike) => {
+      const text = Array.from(event.results as ArrayLike<SpeechResultLike>)
         .slice(event.resultIndex)
-        .map((result) => result[0].transcript)
+        .map((result) => result?.[0]?.transcript || '')
         .join(' ')
         .trim()
       if (text) setPrompt((prev) => (prev ? `${prev} ${text}` : text))
@@ -316,6 +428,61 @@ export default function SimpleApp() {
             <div className="text-xl font-black">Benchmark</div>
             <div className="mt-1 text-sm text-slate-400">Tiny safe model tests.</div>
           </button>
+        </section>
+
+        <section className="mt-6 grid gap-4 md:grid-cols-2">
+          <div className="rounded-3xl border border-white/10 bg-black/30 p-5">
+            <h2 className="text-xl font-black">Local repos & terminal actions</h2>
+            <div className="mt-3 text-sm text-slate-300">
+              <label className="block text-xs">Repo path</label>
+              <select
+                className="mt-1 w-full rounded border border-slate-600 bg-black/40 p-2 text-xs"
+                value={currentRepo}
+                onChange={(event) => {
+                  setCurrentRepo(event.target.value)
+                }}
+              >
+                {repoFolders.length === 0 ? <option value="">No repos found under C:\AICommandCenter\repos</option> : null}
+                {repoFolders.map((repo) => (
+                  <option key={repo} value={repo}>
+                    {repo}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              <button onClick={() => runRepoAction('status')} className="rounded border border-cyan-300/30 px-2 py-2 text-xs">git status</button>
+              <button onClick={() => runRepoAction('npmInstallPreview')} className="rounded border border-sky-300/30 px-2 py-2 text-xs">npm install preview</button>
+              <button onClick={() => runRepoAction('npmBuild')} className="rounded border border-violet-300/30 px-2 py-2 text-xs">npm run build</button>
+              <button onClick={() => runRepoAction('npmTest')} className="rounded border border-emerald-300/30 px-2 py-2 text-xs">npm test</button>
+              <button onClick={() => runRepoAction('openFolder')} className="rounded border border-slate-300/30 px-2 py-2 text-xs">Open folder</button>
+              <button onClick={() => runRepoAction('backup')} className="rounded border border-orange-300/30 px-2 py-2 text-xs">Backup before edits</button>
+            </div>
+
+            <p className="mt-3 text-xs text-slate-300">
+              Backup button performs a safe mirror copy (no .env files touched unless already excluded by existing folder contents).
+            </p>
+            <div className="mt-3 rounded border border-slate-700 p-3 text-xs text-slate-200">
+              <p className="font-bold text-slate-300">Last status</p>
+              <p>Install preview: {repoStates.installPreview.status}</p>
+              <p>Build: {repoStates.npmBuild.status}</p>
+              <p>Test: {repoStates.npmTest.status}</p>
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-white/10 bg-black/30 p-5">
+            <h2 className="text-xl font-black">Activity bubbles</h2>
+            <div className="mt-3 max-h-56 space-y-2 overflow-auto pr-1 text-xs text-slate-200">
+              {activity.length === 0 ? <p className="text-slate-400">No activity yet.</p> : null}
+              {activity.map((item) => (
+                <article key={item.id} className="rounded bg-black/40 border border-white/10 p-2">
+                  <div className="text-[11px] text-slate-500">{item.at}</div>
+                  <div>{item.message}</div>
+                </article>
+              ))}
+            </div>
+          </div>
         </section>
 
         <section className="mt-6 grid flex-1 gap-4 lg:grid-cols-[0.9fr_1.1fr]">
