@@ -36,7 +36,28 @@ type HealthPayload = {
   repos?: { exists?: boolean; path?: string }
 }
 
-type SpeechCtor = new () => SpeechRecognition
+type SpeechResultLike = {
+  isFinal?: boolean
+  0: { transcript: string }
+}
+
+type SpeechResultEventLike = {
+  resultIndex: number
+  results: ArrayLike<SpeechResultLike>
+}
+
+type SpeechRecognitionLike = {
+  lang: string
+  continuous: boolean
+  interimResults: boolean
+  onresult: ((event: SpeechResultEventLike) => void) | null
+  onend: (() => void) | null
+  onerror: (() => void) | null
+  start: () => void
+  stop: () => void
+}
+
+type SpeechCtor = new () => SpeechRecognitionLike
 
 declare global {
   interface Window {
@@ -125,7 +146,7 @@ export default function SimpleApp() {
   const [health, setHealth] = useState<HealthPayload | null>(null)
   const [status, setStatus] = useState<Status>('idle')
   const [listening, setListening] = useState(false)
-  const recognitionRef = useRef<SpeechRecognition | null>(null)
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null)
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(runs.slice(0, 50)))
@@ -142,7 +163,7 @@ export default function SimpleApp() {
 
   const pushRun = (run: Run) => setRuns((prev) => [run, ...prev].slice(0, 50))
 
-  const createTicket = async (provider: Provider, routedPrompt: string, userPrompt: string) => {
+  const createTicket = async (provider: Provider, userPrompt: string) => {
     const ticket = {
       id: makeId(),
       title: userPrompt.slice(0, 80) || 'Mission Control task',
@@ -175,7 +196,7 @@ export default function SimpleApp() {
     }
 
     try {
-      const ticketPath = await createTicket(provider, routedPrompt, userPrompt)
+      const ticketPath = await createTicket(provider, userPrompt)
       if (provider === 'local') {
         await navigator.clipboard.writeText(routedPrompt)
         pushRun({ ...baseRun, status: 'done', ticketPath, output: 'Local-first prompt copied. Use your local Ollama/LM Studio/Codex flow for cheap scan/plan work.' })
@@ -231,7 +252,11 @@ export default function SimpleApp() {
     recognition.continuous = true
     recognition.interimResults = false
     recognition.onresult = (event) => {
-      const text = Array.from(event.results).slice(event.resultIndex).map((result) => result[0].transcript).join(' ').trim()
+      const text = Array.from(event.results)
+        .slice(event.resultIndex)
+        .map((result) => result[0].transcript)
+        .join(' ')
+        .trim()
       if (text) setPrompt((prev) => (prev ? `${prev} ${text}` : text))
     }
     recognition.onend = () => setListening(false)
