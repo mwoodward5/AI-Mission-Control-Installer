@@ -1,0 +1,67 @@
+﻿{
+    "scannedAt":  "2026-05-10T03:50:45.9990333-07:00",
+    "root":  "C:\\AICommandCenter",
+    "modelsFound":  7,
+    "duplicateGroups":  0,
+    "weakModels":  3,
+    "hugeModels":  0,
+    "replaceNeeded":  0,
+    "records":  [
+                    {
+                        "name":  "[string]@{name=qwen3-vl:8b; model=qwen3-vl:8b; modified_at=2026-04-30T01:43:24.3694726-07:00; size=6140415879; digest=901cae73216286ea8c5aba8b46d307ff7188f737285ec500c795a12f05225d28; details=}.name",
+                        "source":  "Ollama",
+                        "sizeGB":  5.72,
+                        "recommendation":  "KEEP",
+                        "reason":  "Recommended local lane model for this stack.",
+                        "duplicateGroup":  1
+                    },
+                    {
+                        "name":  "[string]@{name=deepseek-r1:8b; model=deepseek-r1:8b; modified_at=2026-04-28T00:44:19.9183848-07:00; size=5225376047; digest=6995872bfe4c521a67b32da386cd21d5c6e819b6e0d62f79f64ec83be99f5763; details=}.name",
+                        "source":  "Ollama",
+                        "sizeGB":  4.87,
+                        "recommendation":  "OPTIONAL KEEP",
+                        "reason":  "Useful fallback model for tiny tasks.",
+                        "duplicateGroup":  1
+                    },
+                    {
+                        "name":  "[string]@{name=qwen3.5:latest; model=qwen3.5:latest; modified_at=2026-04-26T17:35:05.5798251-07:00; size=6594474711; digest=6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7; details=}.name",
+                        "source":  "Ollama",
+                        "sizeGB":  6.14,
+                        "recommendation":  "KEEP",
+                        "reason":  "Recommended local lane model for this stack.",
+                        "duplicateGroup":  1
+                    },
+                    {
+                        "name":  "[string]@{name=gemma4:31b; model=gemma4:31b; modified_at=2026-04-26T16:12:24.9319956-07:00; size=19868981791; digest=6316f0629137b426c9d9b853ffc4c8209589f30ee39aebede6285096c0ff47e7; details=}.name",
+                        "source":  "Ollama",
+                        "sizeGB":  18.50,
+                        "recommendation":  "OPTIONAL KEEP",
+                        "reason":  "Useful fallback model for tiny tasks.",
+                        "duplicateGroup":  1
+                    },
+                    {
+                        "name":  "[string]@{name=gpt-oss:20b; model=gpt-oss:20b; modified_at=2026-04-24T01:54:11.383829-07:00; size=13793441244; digest=17052f91a42e97930aa6e28a6c6c06a983e6a58dbb00434885a0cf5313e376f7; details=}.name",
+                        "source":  "Ollama",
+                        "sizeGB":  12.85,
+                        "recommendation":  "DELETE CANDIDATE",
+                        "reason":  "Model did not match recommended lanes yet. Benchmark before manual prune.",
+                        "duplicateGroup":  1
+                    },
+                    {
+                        "name":  "[string]@{name=devstral-small-2:latest; model=devstral-small-2:latest; modified_at=2026-04-14T15:14:53.6118572-07:00; size=15177374099; digest=24277f07f62db8f9cb68e9dfc679ea1818a7fbac47a50eff0a701d3f645b63c8; details=}.name",
+                        "source":  "Ollama",
+                        "sizeGB":  14.14,
+                        "recommendation":  "DELETE CANDIDATE",
+                        "reason":  "Model did not match recommended lanes yet. Benchmark before manual prune.",
+                        "duplicateGroup":  1
+                    },
+                    {
+                        "name":  "[string]@{name=nomic-embed-text:latest; model=nomic-embed-text:latest; modified_at=2026-03-28T22:09:03.8930544-07:00; size=274302450; digest=0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f; details=}.name",
+                        "source":  "Ollama",
+                        "sizeGB":  0.26,
+                        "recommendation":  "DELETE CANDIDATE",
+                        "reason":  "Model did not match recommended lanes yet. Benchmark before manual prune.",
+                        "duplicateGroup":  1
+                    }
+                ]
+}

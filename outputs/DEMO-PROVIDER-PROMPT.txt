@@ -1,0 +1,3 @@
+Demo prompt for Perplexity:`nTask: Demo repo scan + local summary
+Type: Repo scan
+Repo: C:\AICommandCenter\repos

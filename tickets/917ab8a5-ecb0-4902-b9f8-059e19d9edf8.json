@@ -1,0 +1,15 @@
+{
+  "provider": "Local Ollama/LM Studio",
+  "prompt": "Summarize repository structure and find likely build commands without calling web.",
+  "updatedAt": "2026-05-10T03:51:05.0639169-07:00",
+  "createdAt": "2026-05-10T03:51:05.0627149-07:00",
+  "title": "Demo repo scan + local summary",
+  "id": "917ab8a5-ecb0-4902-b9f8-059e19d9edf8",
+  "ticketType": "Repo scan",
+  "repoPath": "C:\\AICommandCenter\\repos",
+  "status": "queued",
+  "providerAlternates": [
+    "Local Ollama/LM Studio",
+    "Perplexity Max (browser)"
+  ]
+}

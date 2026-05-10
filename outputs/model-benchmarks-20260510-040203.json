@@ -1,0 +1,157 @@
+﻿{
+    "scannedAt":  "2026-05-10T04:02:03.1387572-07:00",
+    "models":  [
+                   {
+                       "model":  "qwen3-vl:8b",
+                       "source":  "Ollama",
+                       "tests":  {
+                                     "find_build_command":  {
+                                                                "latencyMs":  4239,
+                                                                "text":  "",
+                                                                "quality":  0
+                                                            },
+                                     "explain_package_json":  {
+                                                                  "latencyMs":  4209,
+                                                                  "text":  "",
+                                                                  "quality":  0
+                                                              },
+                                     "summarize_repo_structure":  {
+                                                                      "latencyMs":  3794,
+                                                                      "text":  "",
+                                                                      "quality":  0
+                                                                  },
+                                     "write_react_component":  {
+                                                                   "latencyMs":  4212,
+                                                                   "text":  "",
+                                                                   "quality":  0
+                                                               },
+                                     "analyze_error_log":  {
+                                                               "latencyMs":  4223,
+                                                               "text":  "",
+                                                               "quality":  0
+                                                           }
+                                 },
+                       "sizeGB":  5.72,
+                       "speed":  4135,
+                       "quality":  0,
+                       "codingAbility":  0,
+                       "writingAbility":  0,
+                       "usefulness":  0.12,
+                       "recommendation":  "DELETE CANDIDATE"
+                   },
+                   {
+                       "model":  "deepseek-r1:8b",
+                       "source":  "Ollama",
+                       "tests":  {
+                                     "find_build_command":  {
+                                                                "latencyMs":  2294,
+                                                                "text":  "",
+                                                                "quality":  0
+                                                            },
+                                     "explain_package_json":  {
+                                                                  "latencyMs":  4219,
+                                                                  "text":  "",
+                                                                  "quality":  0
+                                                              },
+                                     "summarize_repo_structure":  {
+                                                                      "latencyMs":  2202,
+                                                                      "text":  "",
+                                                                      "quality":  0
+                                                                  },
+                                     "write_react_component":  {
+                                                                   "latencyMs":  3724,
+                                                                   "text":  "",
+                                                                   "quality":  0
+                                                               },
+                                     "analyze_error_log":  {
+                                                               "latencyMs":  4076,
+                                                               "text":  "",
+                                                               "quality":  0
+                                                           }
+                                 },
+                       "sizeGB":  4.87,
+                       "speed":  3303,
+                       "quality":  0,
+                       "codingAbility":  0,
+                       "writingAbility":  0,
+                       "usefulness":  0.15,
+                       "recommendation":  "DELETE CANDIDATE"
+                   },
+                   {
+                       "model":  "qwen3.5:latest",
+                       "source":  "Ollama",
+                       "tests":  {
+                                     "find_build_command":  {
+                                                                "latencyMs":  5104,
+                                                                "text":  "",
+                                                                "quality":  0
+                                                            },
+                                     "explain_package_json":  {
+                                                                  "latencyMs":  5023,
+                                                                  "text":  "",
+                                                                  "quality":  0
+                                                              },
+                                     "summarize_repo_structure":  {
+                                                                      "latencyMs":  4191,
+                                                                      "text":  "",
+                                                                      "quality":  0
+                                                                  },
+                                     "write_react_component":  {
+                                                                   "latencyMs":  5131,
+                                                                   "text":  "```jsx\nimport React from \u0027react\u0027;\n\n// A simple StatusLight component using Tailwind CSS styles\nconst StatusLight = ({ status, label }) =\u003e {\n  const styles = {\n    red: \u0027bg-red-500 shadow-red-500/50\u0027,\n    yellow: \u0027bg-yellow-500 shadow-yellow-500/50\u0027,\n    green:",
+                                                                   "quality":  3
+                                                               },
+                                     "analyze_error_log":  {
+                                                               "latencyMs":  38375,
+                                                               "text":  "",
+                                                               "quality":  0
+                                                           }
+                                 },
+                       "sizeGB":  6.14,
+                       "speed":  11565,
+                       "quality":  0.6,
+                       "codingAbility":  1.5,
+                       "writingAbility":  0,
+                       "usefulness":  0.34,
+                       "recommendation":  "DELETE CANDIDATE"
+                   },
+                   {
+                       "model":  "gemma4:31b",
+                       "source":  "Ollama",
+                       "tests":  {
+                                     "find_build_command":  {
+                                                                "latencyMs":  46582,
+                                                                "text":  "",
+                                                                "quality":  0
+                                                            },
+                                     "explain_package_json":  {
+                                                                  "latencyMs":  46377,
+                                                                  "text":  "",
+                                                                  "quality":  0
+                                                              },
+                                     "summarize_repo_structure":  {
+                                                                      "latencyMs":  30459,
+                                                                      "text":  "",
+                                                                      "quality":  0
+                                                                  },
+                                     "write_react_component":  {
+                                                                   "latencyMs":  31356,
+                                                                   "text":  "",
+                                                                   "quality":  0
+                                                               },
+                                     "analyze_error_log":  {
+                                                               "latencyMs":  23876,
+                                                               "text":  "",
+                                                               "quality":  0
+                                                           }
+                                 },
+                       "sizeGB":  18.50,
+                       "speed":  35730,
+                       "quality":  0,
+                       "codingAbility":  0,
+                       "writingAbility":  0,
+                       "usefulness":  0.01,
+                       "recommendation":  "DELETE CANDIDATE"
+                   }
+               ]
+}

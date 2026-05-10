@@ -1,0 +1,135 @@
+﻿{
+    "checkedAt":  "2026-05-10T03:53:42.5879273-07:00",
+    "root":  "C:\\AICommandCenter",
+    "checks":  {
+                   "node":  "pass",
+                   "npm":  "pass",
+                   "git":  "pass",
+                   "powershell":  "pass",
+                   "ollama":  "pass",
+                   "lmStudio":  "warn",
+                   "repos":  "pass"
+               },
+    "node":  {
+                 "status":  "pass",
+                 "version":  "v24.14.1",
+                 "path":  "C:\\Program Files\\nodejs\\node.exe",
+                 "command":  "node -v"
+             },
+    "npm":  {
+                "status":  "pass",
+                "version":  "11.11.0",
+                "path":  "C:\\Program Files\\nodejs\\npm.ps1",
+                "command":  "npm -v"
+            },
+    "git":  {
+                "status":  "pass",
+                "version":  "git version 2.53.0.windows.2",
+                "path":  "C:\\Program Files\\Git\\cmd\\git.exe",
+                "command":  "git -v"
+            },
+    "powershell":  {
+                       "status":  "pass",
+                       "version":  "5.1.26100.8328",
+                       "path":  "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                       "command":  "powershell -v"
+                   },
+    "systemCheck":  {
+                        "node":  "pass",
+                        "npm":  "pass",
+                        "git":  "pass",
+                        "powershell":  "pass",
+                        "ollama":  "pass",
+                        "lmStudio":  "warn"
+                    },
+    "endpoints":  {
+                      "ollama":  {
+                                     "localhost":  {
+                                                       "detail":  {
+                                                                      "version":  "0.21.0"
+                                                                  },
+                                                       "status":  "pass"
+                                                   },
+                                     "localhost127":  {
+                                                          "detail":  {
+                                                                         "version":  "0.21.0"
+                                                                     },
+                                                          "status":  "pass"
+                                                      }
+                                 },
+                      "lmStudio":  {
+                                       "localhost":  {
+                                                         "detail":  "The operation has timed out.",
+                                                         "status":  "warn"
+                                                     },
+                                       "localhost127":  {
+                                                            "detail":  "Unable to connect to the remote server",
+                                                            "status":  "warn"
+                                                        }
+                                   }
+                  },
+    "browsers":  {
+                     "chrome":  {
+                                    "detected":  true,
+                                    "sample":  "C"
+                                },
+                     "edge":  {
+                                  "detected":  true,
+                                  "sample":  "C"
+                              },
+                     "brave":  {
+                                   "detected":  false,
+                                   "sample":  ""
+                               }
+                 },
+    "repos":  {
+                  "path":  "C:\\AICommandCenter\\repos",
+                  "exists":  true
+              },
+    "modelSources":  {
+                         "ollama":  [
+                                        {
+                                            "name":  "qwen3-vl:8b",
+                                            "size":  "901cae732162"
+                                        },
+                                        {
+                                            "name":  "deepseek-r1:8b",
+                                            "size":  "6995872bfe4c"
+                                        },
+                                        {
+                                            "name":  "qwen3.5:latest",
+                                            "size":  "6488c96fa5fa"
+                                        },
+                                        {
+                                            "name":  "gemma4:31b",
+                                            "size":  "6316f0629137"
+                                        },
+                                        {
+                                            "name":  "gpt-oss:20b",
+                                            "size":  "17052f91a42e"
+                                        },
+                                        {
+                                            "name":  "devstral-small-2:latest",
+                                            "size":  "24277f07f62d"
+                                        },
+                                        {
+                                            "name":  "nomic-embed-text:latest",
+                                            "size":  "0a109f422b47"
+                                        }
+                                    ],
+                         "lmStudio":  [
+
+                                      ]
+                     },
+    "commands":  [
+                     "node -v",
+                     "npm -v",
+                     "git -v",
+                     "powershell -v",
+                     "ollama list",
+                     "Invoke-RestMethod http://localhost:11434/api/version",
+                     "Invoke-RestMethod http://127.0.0.1:11434/api/version",
+                     "Invoke-RestMethod http://localhost:1234/v1/models",
+                     "Invoke-RestMethod http://127.0.0.1:1234/v1/models"
+                 ]
+}

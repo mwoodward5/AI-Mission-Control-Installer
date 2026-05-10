@@ -1,0 +1,157 @@
+﻿{
+    "scannedAt":  "2026-05-10T03:54:49.5744012-07:00",
+    "models":  [
+                   {
+                       "model":  "qwen3-vl:8b",
+                       "source":  "Ollama",
+                       "tests":  {
+                                     "find_build_command":  {
+                                                                "latencyMs":  2074,
+                                                                "text":  "",
+                                                                "quality":  0
+                                                            },
+                                     "explain_package_json":  {
+                                                                  "latencyMs":  2089,
+                                                                  "text":  "",
+                                                                  "quality":  0
+                                                              },
+                                     "summarize_repo_structure":  {
+                                                                      "latencyMs":  2139,
+                                                                      "text":  "",
+                                                                      "quality":  0
+                                                                  },
+                                     "write_react_component":  {
+                                                                   "latencyMs":  2075,
+                                                                   "text":  "",
+                                                                   "quality":  0
+                                                               },
+                                     "analyze_error_log":  {
+                                                               "latencyMs":  2073,
+                                                               "text":  "",
+                                                               "quality":  0
+                                                           }
+                                 },
+                       "sizeGB":  5.72,
+                       "speed":  2090,
+                       "quality":  0,
+                       "codingAbility":  0,
+                       "writingAbility":  0,
+                       "usefulness":  0.24,
+                       "recommendation":  "DELETE CANDIDATE"
+                   },
+                   {
+                       "model":  "deepseek-r1:8b",
+                       "source":  "Ollama",
+                       "tests":  {
+                                     "find_build_command":  {
+                                                                "latencyMs":  4272,
+                                                                "text":  "",
+                                                                "quality":  0
+                                                            },
+                                     "explain_package_json":  {
+                                                                  "latencyMs":  4352,
+                                                                  "text":  "Here\u0027s a breakdown of common `package.json` fields and their impact on scripts, explained for a teammate:\n\n---\n\n### **1. Core Metadata",
+                                                                  "quality":  1
+                                                              },
+                                     "summarize_repo_structure":  {
+                                                                      "latencyMs":  4158,
+                                                                      "text":  "",
+                                                                      "quality":  0
+                                                                  },
+                                     "write_react_component":  {
+                                                                   "latencyMs":  2084,
+                                                                   "text":  "",
+                                                                   "quality":  0
+                                                               },
+                                     "analyze_error_log":  {
+                                                               "latencyMs":  4442,
+                                                               "text":  "",
+                                                               "quality":  0
+                                                           }
+                                 },
+                       "sizeGB":  4.87,
+                       "speed":  3862,
+                       "quality":  0.2,
+                       "codingAbility":  0,
+                       "writingAbility":  0.5,
+                       "usefulness":  0.23,
+                       "recommendation":  "DELETE CANDIDATE"
+                   },
+                   {
+                       "model":  "qwen3.5:latest",
+                       "source":  "Ollama",
+                       "tests":  {
+                                     "find_build_command":  {
+                                                                "latencyMs":  2625,
+                                                                "text":  "",
+                                                                "quality":  0
+                                                            },
+                                     "explain_package_json":  {
+                                                                  "latencyMs":  2616,
+                                                                  "text":  "",
+                                                                  "quality":  0
+                                                              },
+                                     "summarize_repo_structure":  {
+                                                                      "latencyMs":  7138,
+                                                                      "text":  "",
+                                                                      "quality":  0
+                                                                  },
+                                     "write_react_component":  {
+                                                                   "latencyMs":  2647,
+                                                                   "text":  "",
+                                                                   "quality":  0
+                                                               },
+                                     "analyze_error_log":  {
+                                                               "latencyMs":  2644,
+                                                               "text":  "",
+                                                               "quality":  0
+                                                           }
+                                 },
+                       "sizeGB":  6.14,
+                       "speed":  3534,
+                       "quality":  0,
+                       "codingAbility":  0,
+                       "writingAbility":  0,
+                       "usefulness":  0.14,
+                       "recommendation":  "DELETE CANDIDATE"
+                   },
+                   {
+                       "model":  "gemma4:31b",
+                       "source":  "Ollama",
+                       "tests":  {
+                                     "find_build_command":  {
+                                                                "latencyMs":  23229,
+                                                                "text":  "",
+                                                                "quality":  0
+                                                            },
+                                     "explain_package_json":  {
+                                                                  "latencyMs":  24522,
+                                                                  "text":  "",
+                                                                  "quality":  0
+                                                              },
+                                     "summarize_repo_structure":  {
+                                                                      "latencyMs":  33142,
+                                                                      "text":  "",
+                                                                      "quality":  0
+                                                                  },
+                                     "write_react_component":  {
+                                                                   "latencyMs":  24822,
+                                                                   "text":  "",
+                                                                   "quality":  0
+                                                               },
+                                     "analyze_error_log":  {
+                                                               "latencyMs":  35902,
+                                                               "text":  "",
+                                                               "quality":  0
+                                                           }
+                                 },
+                       "sizeGB":  18.50,
+                       "speed":  28323,
+                       "quality":  0,
+                       "codingAbility":  0,
+                       "writingAbility":  0,
+                       "usefulness":  0.02,
+                       "recommendation":  "DELETE CANDIDATE"
+                   }
+               ]
+}

@@ -1,0 +1,67 @@
+﻿{
+    "scannedAt":  "2026-05-10T03:57:31.5319365-07:00",
+    "root":  "C:\\AICommandCenter",
+    "modelsFound":  7,
+    "duplicateGroups":  0,
+    "weakModels":  3,
+    "hugeModels":  0,
+    "replaceNeeded":  0,
+    "records":  [
+                    {
+                        "name":  "qwen3-vl:8b",
+                        "source":  "Ollama",
+                        "sizeGB":  5.72,
+                        "recommendation":  "KEEP",
+                        "reason":  "Recommended local lane model for this stack.",
+                        "duplicateGroup":  1
+                    },
+                    {
+                        "name":  "deepseek-r1:8b",
+                        "source":  "Ollama",
+                        "sizeGB":  4.87,
+                        "recommendation":  "KEEP",
+                        "reason":  "Recommended local lane model for this stack.",
+                        "duplicateGroup":  1
+                    },
+                    {
+                        "name":  "qwen3.5:latest",
+                        "source":  "Ollama",
+                        "sizeGB":  6.14,
+                        "recommendation":  "KEEP",
+                        "reason":  "Recommended local lane model for this stack.",
+                        "duplicateGroup":  1
+                    },
+                    {
+                        "name":  "gemma4:31b",
+                        "source":  "Ollama",
+                        "sizeGB":  18.50,
+                        "recommendation":  "OPTIONAL KEEP",
+                        "reason":  "Useful fallback model for tiny tasks.",
+                        "duplicateGroup":  1
+                    },
+                    {
+                        "name":  "gpt-oss:20b",
+                        "source":  "Ollama",
+                        "sizeGB":  12.85,
+                        "recommendation":  "DELETE CANDIDATE",
+                        "reason":  "Model did not match recommended lanes yet. Benchmark before manual prune.",
+                        "duplicateGroup":  1
+                    },
+                    {
+                        "name":  "devstral-small-2:latest",
+                        "source":  "Ollama",
+                        "sizeGB":  14.14,
+                        "recommendation":  "DELETE CANDIDATE",
+                        "reason":  "Model did not match recommended lanes yet. Benchmark before manual prune.",
+                        "duplicateGroup":  1
+                    },
+                    {
+                        "name":  "nomic-embed-text:latest",
+                        "source":  "Ollama",
+                        "sizeGB":  0.26,
+                        "recommendation":  "DELETE CANDIDATE",
+                        "reason":  "Model did not match recommended lanes yet. Benchmark before manual prune.",
+                        "duplicateGroup":  1
+                    }
+                ]
+}
