@@ -54,6 +54,16 @@ $ollamaReach127 = runLocalRequest 'http://127.0.0.1:11434/api/version'
 $lmStudioReach = runLocalRequest 'http://localhost:1234/v1/models'
 $lmStudioReach127 = runLocalRequest 'http://127.0.0.1:1234/v1/models'
 
+$commandList = @('node -v', 'npm -v', 'git -v')
+if ($powershellPath) { $commandList += 'powershell -v' } elseif ($powershell7Path) { $commandList += 'pwsh -v' } else { $commandList += 'powershell unavailable' }
+$commandList += @(
+  'ollama list',
+  'Invoke-RestMethod http://localhost:11434/api/version',
+  'Invoke-RestMethod http://127.0.0.1:11434/api/version',
+  'Invoke-RestMethod http://localhost:1234/v1/models',
+  'Invoke-RestMethod http://127.0.0.1:1234/v1/models'
+)
+
 $browserPaths = [ordered]@{
   chrome = @(
     Join-Path $env:ProgramFiles 'Google\Chrome\Application\chrome.exe'
@@ -165,17 +175,7 @@ $result = [ordered]@{
     ollama = $ollamaModels
     lmStudio = $lmStudioModels
   }
-  commands = @(
-    'node -v',
-    'npm -v',
-    'git -v',
-    if ($powershellPath) { 'powershell -v' } elseif ($powershell7Path) { 'pwsh -v' } else { 'powershell unavailable' },
-    'ollama list',
-    'Invoke-RestMethod http://localhost:11434/api/version',
-    'Invoke-RestMethod http://127.0.0.1:11434/api/version',
-    'Invoke-RestMethod http://localhost:1234/v1/models',
-    'Invoke-RestMethod http://127.0.0.1:1234/v1/models'
-  )
+  commands = $commandList
 }
 
 $resultFile = Join-Path $logsPath "system-check-$timestamp.json"
@@ -187,4 +187,3 @@ if ($logDirResult) {
 }
 
 Write-Output $result | ConvertTo-Json -Depth 12
-
