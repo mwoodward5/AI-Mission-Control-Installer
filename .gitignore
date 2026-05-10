@@ -1,0 +1,30 @@
+# Node / Vite
+node_modules/
+dist/
+.vite/
+coverage/
+*.tsbuildinfo
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Local AI Mission Control runtime data
+logs/
+logs/*.json
+models/
+models/*.json
+tickets/
+tickets/*.json
+outputs/*.json
+outputs/*.md
+outputs/media/
+backups/
+
+# Windows / editor noise
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
